@@ -20,7 +20,6 @@ void lower(string a[], size_t size ){
         while (b[j]){
             char c = b[j];
             b[j] = tolower(c);
-            cout<<b[j]<<endl;
             j++;
             
         }
