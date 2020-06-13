@@ -25,26 +25,26 @@ size_t MyHashTable::hash(string name) const {
 void MyHashTable::insertItem(string name, int perm) {
 	size_t index = hash(name);
 	table[index] ->push_back(pair<string, int>(name, perm));
-	cout<<"Inserting: "<<name<<" at already used index:"<<index << endl;
+	
 	}
 
 
 //iterator is an abstraction for a position in a collection of objects 
 //pointer to elements position although not a pointer 
 void MyHashTable::deleteItem(string name) {
-	cout<<"deleteItem: "<<name << endl;
+
 	int index = hash(name);	
+    if (table[index]->size()==0){
+            return;
+    }
 	vector<pair<string, int>>::const_iterator it; 
 	for (it = table[index]->begin(); it != table[index]->end(); it++){
-		if ( it->first == name) 
-			break;
-	}
-		if (it != table[index]->end()){
-			table[index]->erase(it);//setting vector to zero		
-			} 
-
-		cout<<"deleteItem DONE : "<<name << endl;
+		if ( it->first == name) {
+            table[index]->erase(it--);
+       	 	}
 		
+		}
+
 	}
 	
 	 
@@ -62,7 +62,6 @@ string MyHashTable::toString() const {
 			result += "[" ;
 		for (it = table[i]->begin(); it != table[i]->end(); it++){
 			if (it != table[i]->end()){
-				cout<< "to String"<< it->first<<endl;
 				result += "(" + it->first +"," ; // printing name
 				result += to_string(it->second) + ")"; //printing perm
 				}
@@ -83,35 +82,28 @@ MyHashTable::MyHashTable(const MyHashTable &orig) {
 vector<pair<string, int>>::const_iterator it;
 for (size_t i = 0; i < CAPACITY; i++){
 	for (it = table[i]->begin(); it != table[i]->end(); it++){
-
-		if (it != table[i]->end()){
-			table[i]->erase(it);
+		if (table[i]->size()==0){
+			return;
+		}
+			table[i]->erase(it--);
 			}
 		}
 
-	}
 
-for (size_t i = 0; i < CAPACITY; i++){
-	if (orig.table[i]->size()!=0)
-	insertItem(orig.table[i]->front().first, orig.table[i]->front().second);
+	for (size_t i = 0; i < CAPACITY; i++){
+		if (orig.table[i]->size()!=0)
+		insertItem(orig.table[i]->front().first, orig.table[i]->front().second);
 	}
 }
 
 MyHashTable::~MyHashTable() {
 vector<pair<string, int>> *temp;
-vector<pair<string, int>>::const_iterator it;
 for (size_t i = 0; i < CAPACITY; i++){
-	for (it = table[i]->begin(); it != table[i]->end(); it++){
-		if (it != table[i]->end()){
-			table[i]->erase(it);
-			}
-	}
-
 	if (NULL != table[i]){
-		temp = table[i];	 
-		delete[] temp;
-		table[i] = NULL;
-		temp = NULL;
+		temp = table[i];
+		table[i] = NULL;	 
+		delete temp;
+		delete table[i];
 		}
 		// i did not delete the entire table array becuase only the pointers where allocated on the heap using new
 	
